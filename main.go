@@ -21,6 +21,7 @@ type Rule struct {
 	Test  string   `json:"test"`
 	XAxis []string `json:"xAxis"`
 	YAxis []string `json:"yAxis"`
+	ZAxis string   `json:"zAxis"`
 }
 
 // Find - Search element in a list
@@ -37,10 +38,10 @@ func Find(slice []string, val string) (int, bool) {
 
 // findMatched - recursive function. Find [x,y] from a list
 // Return status
-func findMatched(rules Rules, index int, x string, y string) bool {
+func findMatched(rules Rules, index int, x string, y string) (string, bool) {
 
 	if index >= len(rules.Rules) {
-		return false
+		return "", false
 	}
 
 	_, xExisted := Find(rules.Rules[index].XAxis, x)
@@ -51,7 +52,7 @@ func findMatched(rules Rules, index int, x string, y string) bool {
 		fmt.Println("Rule X-Axis Value: ", rules.Rules[index].XAxis)
 		fmt.Println("Rule Y-Axis Value: ", rules.Rules[index].YAxis)
 
-		return true
+		return rules.Rules[index].ZAxis, true
 	} else {
 		index++
 		return findMatched(rules, index, x, y)
@@ -116,8 +117,14 @@ func main() {
 	// Wait for input from user - [x,y]
 	data := getInputFromKeyboard()
 
-	test := findMatched(rules, 0, data[0], data[1])
-	fmt.Println("\nHi, the result is - ", test)
+	// Search [x,y] from database, then display
+	zAxis, status := findMatched(rules, 0, data[0], data[1])
+	if status {
+		fmt.Println("\nHi, the result is - ", zAxis)
+	} else {
+		fmt.Printf("\nCan't find element - [%s, %s] \n", data[0], data[1])
+	}
 
+	// Suspend process to exit
 	fmt.Scanf("h")
 }

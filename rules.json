@@ -2,15 +2,18 @@
     "rules": [
         {
             "xAxis": ["1","2","3","4", "5"],
-            "yAxis": ["a", "b", "c"]
+            "yAxis": ["a", "b", "c"],
+            "zAxis": "Okay-1"
         },
         {
             "xAxis": ["11","22","33"],
-            "yAxis": ["aa", "bb", "cc"]
+            "yAxis": ["aa", "bb", "cc"],
+            "zAxis": "Okay-2"
         },
         {
             "xAxis": ["111","222","333"],
-            "yAxis": ["aaa", "ccc"]
+            "yAxis": ["aaa", "ccc"],
+            "zAxis": "Okay-3"
         }
     ]
 }
