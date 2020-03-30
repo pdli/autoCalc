@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -55,6 +56,14 @@ func findMatched(rules Rules, index int, x string, y string) bool {
 }
 
 func main() {
+
+	// Wait for input from user - [x,y]
+	xValue := ""
+	yValue := ""
+	flag.StringVar(&xValue, "x", "x-default value", "Input the x axis value:")
+	flag.StringVar(&yValue, "y", "y-default value", "Input the y axis value:")
+	flag.Parse()
+
 	// Open our jsonFile
 	jsonFile, err := os.Open("rules.json")
 	// if we os.Open returns an error then handle it
@@ -82,6 +91,6 @@ func main() {
 		fmt.Println("Rule Y-Axis Value: ", rules.Rules[i].YAxis)
 	}
 
-	test := findMatched(rules, 0, "111", "ccc")
+	test := findMatched(rules, 0, xValue, yValue)
 	fmt.Println("\nHi, the result is - ", test)
 }
