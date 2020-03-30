@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
+	"strings"
 )
 
 // Rules struct which contains
@@ -24,6 +26,7 @@ type Rule struct {
 // Find - Search element in a list
 // Return index and status from a list
 func Find(slice []string, val string) (int, bool) {
+
 	for i, item := range slice {
 		if item == val {
 			return i, true
@@ -55,23 +58,34 @@ func findMatched(rules Rules, index int, x string, y string) bool {
 	}
 }
 
-func main() {
+func getInputFromKeyboard() [2]string {
 
-	// Wait for input from user - [x,y]
-	xValue := ""
-	yValue := ""
-	flag.StringVar(&xValue, "x", "x-default value", "Input the x axis value:")
-	flag.StringVar(&yValue, "y", "y-default value", "Input the y axis value:")
-	flag.Parse()
+	var data [2]string
+	for i := 0; i < len(data); i++ {
+		inputReader := bufio.NewReader(os.Stdin)
+		fmt.Printf("Please enter the %d value: ", i+1)
+		input, err := inputReader.ReadString('\n')
+		if err != nil {
+			log.Fatal("There were errors reading, exiting program.")
+		}
+		data[i] = strings.Replace(input, "\r\n", "", -1)
+		fmt.Println("  Input is -", data[i])
+	}
+
+	return data
+}
+
+//readJSONFile - read json file and convert into struct Rules
+func readJSONFile() Rules {
 
 	// Open our jsonFile
 	jsonFile, err := os.Open("rules.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
-	fmt.Println("Successfully Opened rules.json")
+	//fmt.Printf("\nSuccessfully Opened rules.json\n")
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
@@ -86,11 +100,24 @@ func main() {
 	json.Unmarshal(byteValue, &rules)
 
 	// we iterate through every rule within our rules array
-	for i := 0; i < len(rules.Rules); i++ {
+	/*for i := 0; i < len(rules.Rules); i++ {
 		fmt.Println("Rule X-Axis Value: ", rules.Rules[i].XAxis)
 		fmt.Println("Rule Y-Axis Value: ", rules.Rules[i].YAxis)
-	}
+	}*/
 
-	test := findMatched(rules, 0, xValue, yValue)
+	return rules
+}
+
+func main() {
+
+	// Read Json file into memory
+	rules := readJSONFile()
+
+	// Wait for input from user - [x,y]
+	data := getInputFromKeyboard()
+
+	test := findMatched(rules, 0, data[0], data[1])
 	fmt.Println("\nHi, the result is - ", test)
+
+	fmt.Scanf("h")
 }
